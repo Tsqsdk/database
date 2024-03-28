@@ -41,13 +41,14 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     //await client----
     await client.connect();
-
+    console.log("Connected correctly to server");
+    
     //insert document to database
-    client.db("benr_2423").collection("users").insertOne({
+    await client.db("benr_2423").collection("users").insertOne({
       name:"john",
       email:"john@gmail",
       password: "0213",
-    }
+    })
 
     // Send a ping to confirm a successful connection
     
