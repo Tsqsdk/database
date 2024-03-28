@@ -3,7 +3,7 @@ const express = require('express')
 const app = express() 
 
 const port = process.env.PORT || 3000; 
-
+const { ObjectId } = require('mongodb');
  
 
 app.use(express.json()) 
@@ -44,13 +44,12 @@ async function run() {
     console.log("Connected correctly to server");
 
     //insert document to database
-    let result= await client.db("benr_2423").collection("new").insertOne({
-      name:"john",
-      email:"john@gmail",
-      password: "0213",
-    })
+    //let result= await client.db("benr_2423").collection("new").updateOne(
+     //   { _id: new ObjectId("660515b855e76ed1b754d70a")},
+     //   { $set: { name: "Te"}}
+    //)
     console.log(result)
-    
+
     // Send a ping to confirm  successful connection
     
   } finally {
