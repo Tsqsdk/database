@@ -3,6 +3,8 @@ const express = require('express')
 const app = express() 
 
 const port = process.env.PORT || 3000; 
+
+//to solve ObjectId is not defined
 const { ObjectId } = require('mongodb');
  
 
@@ -43,15 +45,44 @@ async function run() {
     await client.connect();
     console.log("Connected correctly to server");
 
+    // Send a ping to confirm a successful connection
+    //await client.db("admin").command({ ping: 1 });
+    //console.log("Pinged your deployment. You successfully connected to MongoDB!");
+
     //insert document to database
-    //let result= await client.db("benr_2423").collection("new").updateOne(
-     //   { _id: new ObjectId("660515b855e76ed1b754d70a")},
-     //   { $set: { name: "Te"}}
-    //)
+    /*let result= await client.db("benr_2423").collection("new").insertOne({
+      name: "Teeshi",
+      email: "Teeshi@gmail",
+      password: "1234",
+    });
+    */
+
+    //find array in database
+    let result= await client.db("benr_2423").collection("new").find().toArray();
+
+    //find specific array in database
+    /*let result= await client.db("benr_2423").collection("new").find(
+      {
+        name: "john",
+        email: "john@gmail",
+      }).toArray();
+    */
+
+    //update array in database
+    /*let result= await client.db("benr_2423").collection("new").updateOne(
+       { _id: new ObjectId("660515b855e76ed1b754d70a")},
+       { $set: { name: "Te"}}
+    );
+    */
+
+    //detele array in database
+    /*let result= await client.db("benr_2423").collection("new").deleteOne(
+      { _id: new ObjectId("660526c57766631a61725552")},
+    );
+    */
+
     console.log(result)
 
-    // Send a ping to confirm  successful connection
-    
   } finally {
     // Ensures that the client will close when you finish/error
     await client.close();
