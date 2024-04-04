@@ -1,7 +1,5 @@
 const express = require('express') 
-
 const app = express() 
-
 const port = process.env.PORT || 3000; 
 
 //to solve ObjectId is not defined
@@ -10,8 +8,61 @@ const { ObjectId } = require('mongodb');
 
 app.use(express.json()) 
 
- 
+//registration new user
+app.post('/user', async(req, res) => {
+//app.post('/user', (req, res) => {
+  //insertOne
+  //console.log('create user profile')
+  //console.log(req)
+  //console.log(req.body)//to get the data of body from postman
+  let result = await client.db("benr_2423").collection("new").insertOne(
+    //await must with async
+    {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password,
+    }
+    )
+    res.send(result)
+})
 
+ //get user profile
+ //:username is a parameter that can be anything that user key in
+//可以有多个parameter
+//app.get('/user/:username/：gmail', (req, res) => {
+app.get('/user/:username', (req, res) => {
+  //findOne
+  //console.log('get user profile')
+  console.log(req.params)//to get the data of body from postman
+  //console.log(req.params.username)//to get the data of body from postman
+  //let result =client.db("benr_2423").collection("new").findOne(
+  //  {
+  //    name: req.params.username,
+  //    email: req.params.gmail,
+  //  }
+  //)
+  //res.send(result)
+})
+//app.get('/user', (req, res) => {})
+//cannot use 2 get method with same end point, it will crash
+
+//update user profile
+app.patch('/user', (req, res) => {
+  //UpdateOne
+  console.log('update user profile')
+})
+
+//delete user profile
+app.delete('/user', (req, res) => {
+  //DeleteOne
+  console.log('delete user profile')
+
+})
+
+//define get method
+//end point is '/'
+//req is request
+//res is response
 app.get('/', (req, res) => { 
 
    res.send('Hello World!') 
@@ -19,7 +70,7 @@ app.get('/', (req, res) => {
 }) 
 
  
-
+//start server by listening to port
 app.listen(port, () => { 
 
    console.log(`Example app listening on port ${port}`) 
