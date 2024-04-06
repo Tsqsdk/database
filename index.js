@@ -10,42 +10,54 @@ app.use(express.json())
 
 //registration new user
 app.post('/user', async(req, res) => {
+  try{
+  await client. connect();
 //app.post('/user', (req, res) => {
   //insertOne
   //console.log('create user profile')
   //console.log(req)
   //console.log(req.body)//to get the data of body from postman
-  let result = await client.db("benr_2423").collection("new").insertOne(
+  let result = await client .db("benr_2423").collection("new").insertOne(
     //await must with async
     {
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-    }
-    )
-    res.send(result)
-})
+    });
+    res.json(result);
+    console.log(result);
+}catch(err){
+  console.log(err);
+} finally { 
+  await client.close();
+}
+});
 
- //get user profile
- //:username is a parameter that can be anything that user key in
+
+
+
+//get user profile
+//:username is a parameter that can be anything that user key in
 //可以有多个parameter
-//app.get('/user/:username/：gmail', (req, res) => {
-app.get('/user/:username', (req, res) => {
+app.get('/user/:username/:email/:password', async(req, res) => {
   //findOne
-  //console.log('get user profile')
-  console.log(req.params)//to get the data of body from postman
-  //console.log(req.params.username)//to get the data of body from postman
-  //let result =client.db("benr_2423").collection("new").findOne(
-  //  {
-  //    name: req.params.username,
-  //    email: req.params.gmail,
-  //  }
-  //)
-  //res.send(result)
+  console.log('get user profile')
+  //console.log(req.params)//to get the data of body from postman
+  //console.log(req.params.username.email)//to get the data of body from postman
+  let result =await client.db("benr_2423").collection("new").findOne(
+    {
+      name: req.params.username,
+      email: req.params.email,
+      password: req.params.password,
+
+    }
+  )
+  res.send(result)
 })
 //app.get('/user', (req, res) => {})
 //cannot use 2 get method with same end point, it will crash
 
+/*
 //update user profile
 app.patch('/user', (req, res) => {
   //UpdateOne
@@ -59,16 +71,19 @@ app.delete('/user', (req, res) => {
 
 })
 
+*/
+
 //define get method
 //end point is '/'
 //req is request
 //res is response
+/*
 app.get('/', (req, res) => { 
 
    res.send('Hello World!') 
 
 }) 
-
+*/
  
 //start server by listening to port
 app.listen(port, () => { 
@@ -97,8 +112,8 @@ async function run() {
     console.log("Connected correctly to server");
 
     // Send a ping to confirm a successful connection
-    //await client.db("admin").command({ ping: 1 });
-    //console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     //insert document to database
     /*let result= await client.db("benr_2423").collection("new").insertOne({
@@ -109,7 +124,7 @@ async function run() {
     */
 
     //find array in database
-    let result= await client.db("benr_2423").collection("new").find().toArray();
+    //let result= await client.db("benr_2423").collection("new").find().toArray();
 
     //find specific array in database
     /*let result= await client.db("benr_2423").collection("new").find(
@@ -132,7 +147,7 @@ async function run() {
     );
     */
 
-    console.log(result)
+    //console.log(result)
 
   } finally {
     // Ensures that the client will close when you finish/error
