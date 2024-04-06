@@ -7,9 +7,9 @@ const { ObjectId } = require('mongodb');
  
 
 app.use(express.json()) 
-app.get('/user', (req, res) => { 
+app.get('/', (req, res) => { 
 
-  res.send('Hello World!') 
+  res.send('welcome to my application') 
 
 });
 
