@@ -7,6 +7,12 @@ const { ObjectId } = require('mongodb');
  
 
 app.use(express.json()) 
+app.get('/user', (req, res) => { 
+
+  res.send('Hello World!') 
+
+});
+
 /*
 //registration new user
 app.post('/user', async(req, res) => {
