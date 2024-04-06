@@ -7,7 +7,7 @@ const { ObjectId } = require('mongodb');
  
 
 app.use(express.json()) 
-
+/*
 //registration new user
 app.post('/user', async(req, res) => {
   try{
@@ -32,7 +32,7 @@ app.post('/user', async(req, res) => {
   await client.close();
 }
 });
-
+*/
 
 /*
 
@@ -59,7 +59,7 @@ app.get('/user/:tsk88', async(req, res) => {
 //cannot use 2 get method with same end point, it will crash
 */
 
-
+/*
 
 app.get('/user/:tsqsdk', async (req, res) => {
   try {
@@ -78,7 +78,7 @@ app.get('/user/:tsqsdk', async (req, res) => {
     res.status(500).send('Server error');
   } 
 });
-
+*/
 /*
 //update user profile
 app.patch('/user', (req, res) => {
@@ -100,11 +100,11 @@ app.delete('/user', (req, res) => {
 //req is request
 //res is response
 
-app.get('/', (req, res) => { 
+app.get('/user', (req, res) => { 
 
    res.send('Hello World!') 
 
-}) 
+});
 
  
 //start server by listening to port
