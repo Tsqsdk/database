@@ -34,13 +34,13 @@ app.post('/user', async(req, res) => {
 });
 
 
-
+/*
 
 //get user profile
 //:username is a parameter that can be anything that user key in
 //可以有多个parameter
 //app.get('/user/:username/:email/:password', async(req, res) => {
-app.get('/user/:tsk88, async(req, res) => {
+app.get('/user/:tsk88', async(req, res) => {
   //findOne
   //console.log('get user profile')
   //console.log(req.params)//to get the data of body from postman
@@ -57,6 +57,27 @@ app.get('/user/:tsk88, async(req, res) => {
 })
 //app.get('/user', (req, res) => {})
 //cannot use 2 get method with same end point, it will crash
+*/
+
+
+
+app.get('/user/:tsqsdk', async (req, res) => {
+  try {
+    await client.connect();
+    console.log(req.params.tsqsdk);
+    let result = await client.db("benr_2423").collection("new").findOne(
+      { 
+        name: req.params.tsqsdk,
+        
+      }
+    );
+    res.json(result);
+    console.log(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  } 
+});
 
 /*
 //update user profile
@@ -78,13 +99,13 @@ app.delete('/user', (req, res) => {
 //end point is '/'
 //req is request
 //res is response
-/*
+
 app.get('/', (req, res) => { 
 
    res.send('Hello World!') 
 
 }) 
-*/
+
  
 //start server by listening to port
 app.listen(port, () => { 
