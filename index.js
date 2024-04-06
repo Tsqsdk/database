@@ -39,16 +39,17 @@ app.post('/user', async(req, res) => {
 //get user profile
 //:username is a parameter that can be anything that user key in
 //可以有多个parameter
-app.get('/user/:username/:email/:password', async(req, res) => {
+//app.get('/user/:username/:email/:password', async(req, res) => {
+app.get('/user/:tsk88, async(req, res) => {
   //findOne
-  console.log('get user profile')
+  //console.log('get user profile')
   //console.log(req.params)//to get the data of body from postman
   //console.log(req.params.username.email)//to get the data of body from postman
   let result =await client.db("benr_2423").collection("new").findOne(
     {
       name: req.params.username,
-      email: req.params.email,
-      password: req.params.password,
+      //email: req.params.email,
+      //password: req.params.password,
 
     }
   )
