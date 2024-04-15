@@ -2,6 +2,9 @@ const express = require('express')
 const app = express() 
 const port = process.env.PORT || 3000; 
 
+//to solve - ReferenceError: bcrypt is not defined
+const bcrypt = require('bcrypt');
+
 //to solve ObjectId is not defined
 const { ObjectId } = require('mongodb');
  
@@ -13,33 +16,62 @@ app.get('/', (req, res) => {
 
 });
 
-/*
 //registration new user
+//client side
 app.post('/user', async(req, res) => {
   try{
-  await client. connect();
-//app.post('/user', (req, res) => {
-  //insertOne
-  //console.log('create user profile')
-  //console.log(req)
-  //console.log(req.body)//to get the data of body from postman
-  let result = await client .db("benr_2423").collection("new").insertOne(
-    //await must with async
-    {
-      name: req.body.name,
-      email: req.body.email,
-      password: req.body.password,
-    });
+    await client.connect();
+    const hash = bcrypt.hashSync(req.body.password, 10);
+    // Store hash in your password DB.
+    //app.post('/user', (req, res) => {
+    //insertOne
+    //console.log('create user profile')
+    //console.log(req)
+    //console.log(req.body)//to get the data of body from postman
+    let result = await client.db("benr_2423").collection("new").insertOne(
+      //await must with async
+      {
+        name: req.body.name,
+        email: req.body.email,
+        password: hash,
+      });
     res.json(result);
     console.log(result);
-}catch(err){
-  console.log(err);
-} finally { 
-  await client.close();
-}
+  } catch(err){
+    console.log(err);
+  } finally { 
+    await client.close();
+  }
 });
-*/
 
+//login user with (/...)endpoint
+//client side
+app.post('/login', async(req, res) => {
+  try {
+    await client.connect();
+    //check email or username if exist--client.db("benr_2423").collection("new").findOne
+    let result = await client.db("benr_2423").collection("new").findOne(
+      {
+        name: req.body.name,
+        //email: req.body.email,
+      });
+    if(!result){
+      res.send('Username not found')
+    }else{
+      //check password--bcrypt.compare
+      if(bcrypt.compareSync(req.body.password, result.password)){
+        res.send('Login success')
+      }else{
+        res.send('Login failed')
+      }
+    }
+  } catch(err) {
+    console.log(err);
+  } finally {
+    await client.close();
+  }
+}); 
+  
 /*
 
 //get user profile
