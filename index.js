@@ -2,7 +2,7 @@ const express = require('express')
 const app = express() 
 const port = process.env.PORT || 3000; 
 
-//to solve - ReferenceError: bcrypt is not defined
+//to solve bcrypt is not defined
 const bcrypt = require('bcrypt');
 
 //to solve ObjectId is not defined
@@ -55,6 +55,7 @@ app.post('/login', async(req, res) => {
         name: req.body.name,
         //email: req.body.email,
       });
+      console.log(result);
     if(!result){
       res.send('Username not found')
     }else{
@@ -134,7 +135,7 @@ app.delete('/user', (req, res) => {
 */
 
 //define get method
-//end point is '/'
+//end point is '/user'
 //req is request
 //res is response
 
