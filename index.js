@@ -10,17 +10,10 @@ const { ObjectId } = require('mongodb');
  
 
 app.use(express.json()) 
-app.get('/', (req, res) => { 
 
-  res.send('welcome to my application') 
 
-});
-
-//registration new user
-//client side
+//registration new user at client side
 app.post('/user', async(req, res) => {
-  try{
-    await client.connect();
     const hash = bcrypt.hashSync(req.body.password, 10);
     // Store hash in your password DB.
     //app.post('/user', (req, res) => {
@@ -37,21 +30,16 @@ app.post('/user', async(req, res) => {
       });
     res.json(result);
     console.log(result);
-  } catch(err){
-    console.log(err);
-  } finally { 
-    await client.close();
-  }
-});
+  } 
+);
 
-//login user with (/...)endpoint
-//client side
+//login user with (/...)endpoint at client side
+//sometime, login using gmail and password, but sometimes, login using username and password
 app.post('/login', async(req, res) => {
-  try {
-    await client.connect();
     //check email or username if exist--client.db("benr_2423").collection("new").findOne
     let result = await client.db("benr_2423").collection("new").findOne(
       {
+        //1. check the existing of username by using findOne
         name: req.body.name,
         //email: req.body.email,
       });
@@ -59,92 +47,79 @@ app.post('/login', async(req, res) => {
     if(!result){
       res.send('Username not found')
     }else{
-      //check password--bcrypt.compare
+      //2. check password--bcrypt.compare
       if(bcrypt.compareSync(req.body.password, result.password)){
         res.send('Login success')
       }else{
         res.send('Login failed')
       }
     }
-  } catch(err) {
-    console.log(err);
-  } finally {
-    await client.close();
-  }
-}); 
+  } 
+); 
   
-/*
+
 
 //get user profile
 //:username is a parameter that can be anything that user key in
 //可以有多个parameter
 //app.get('/user/:username/:email/:password', async(req, res) => {
-app.get('/user/:tsk88', async(req, res) => {
+app.get('/user/:name', async(req, res) => {
   //findOne
   //console.log('get user profile')
   //console.log(req.params)//to get the data of body from postman
   //console.log(req.params.username.email)//to get the data of body from postman
   let result =await client.db("benr_2423").collection("new").findOne(
     {
-      name: req.params.username,
+      name: req.params.name,
       //email: req.params.email,
       //password: req.params.password,
 
     }
   )
-  res.send(result)
+  res.json(result);
+  console.log(result);
 })
 //app.get('/user', (req, res) => {})
 //cannot use 2 get method with same end point, it will crash
-*/
 
-/*
-
-app.get('/user/:tsqsdk', async (req, res) => {
-  try {
-    await client.connect();
-    console.log(req.params.tsqsdk);
-    let result = await client.db("benr_2423").collection("new").findOne(
-      { 
-        name: req.params.tsqsdk,
-        
-      }
-    );
-    res.json(result);
-    console.log(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  } 
-});
-*/
-/*
 //update user profile
-app.patch('/user', (req, res) => {
-  //UpdateOne
-  console.log('update user profile')
-})
+app.patch('/user/:name', async (req, res) => {
+  let result = await client.db("benr_2423").collection("new").updateOne(
+    {
+      name: req.params.name,
+    },
+    {
+      $set: {
+        email: req.body.email,
+      },
+    });
+  console.log(result);
+  res.json(result);
+})  
 
 //delete user profile
-app.delete('/user', (req, res) => {
-  //DeleteOne
-  console.log('delete user profile')
-
+app.delete('/user/:name', async (req, res) => {
+  let result = await client.db("benr_2423").collection("new").deleteOne(
+    {
+      name: req.params.name,
+    });
+  console.log(result);
+  res.json(result);
 })
 
-*/
+
 
 //define get method
 //end point is '/user'
 //req is request
 //res is response
-
+/*
 app.get('/user', (req, res) => { 
 
    res.send('Hello World!') 
 
 });
-
+*/
  
 //start server by listening to port
 app.listen(port, () => { 
@@ -165,6 +140,7 @@ const client = new MongoClient(uri, {
   }
 });
 
+/*
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
@@ -177,36 +153,36 @@ async function run() {
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
 
     //insert document to database
-    /*let result= await client.db("benr_2423").collection("new").insertOne({
+    let result= await client.db("benr_2423").collection("new").insertOne({
       name: "Teeshi",
       email: "Teeshi@gmail",
       password: "1234",
     });
-    */
+    
 
     //find array in database
     //let result= await client.db("benr_2423").collection("new").find().toArray();
 
     //find specific array in database
-    /*let result= await client.db("benr_2423").collection("new").find(
+    let result= await client.db("benr_2423").collection("new").find(
       {
         name: "john",
         email: "john@gmail",
       }).toArray();
-    */
+    
 
     //update array in database
-    /*let result= await client.db("benr_2423").collection("new").updateOne(
+    let result= await client.db("benr_2423").collection("new").updateOne(
        { _id: new ObjectId("660515b855e76ed1b754d70a")},
        { $set: { name: "Te"}}
     );
-    */
+    
 
     //detele array in database
-    /*let result= await client.db("benr_2423").collection("new").deleteOne(
+    let result= await client.db("benr_2423").collection("new").deleteOne(
       { _id: new ObjectId("660526c57766631a61725552")},
     );
-    */
+    
 
     //console.log(result)
 
@@ -216,3 +192,4 @@ async function run() {
   }
 }
 run().catch(console.dir);
+*/
