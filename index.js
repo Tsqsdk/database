@@ -13,6 +13,7 @@ app.use(express.json())
 
 
 //registration new user at client side
+//post user without checking the existing of user
 app.post('/user', async(req, res) => {
     const hash = bcrypt.hashSync(req.body.password, 10);
     // Store hash in your password DB.
@@ -57,23 +58,27 @@ app.post('/login', async(req, res) => {
   } 
 ); 
   
-
+/*
+app.get('/user/:name/:gmail', async(req, res) => {
+  console.log(req.params)
+})
+*/
 
 //get user profile
 //:username is a parameter that can be anything that user key in
 //可以有多个parameter
 //app.get('/user/:username/:email/:password', async(req, res) => {
-app.get('/user/:name', async(req, res) => {
+app.get('/user/:namee/:id', async(req, res) => {
   //findOne
   //console.log('get user profile')
   //console.log(req.params)//to get the data of body from postman
   //console.log(req.params.username.email)//to get the data of body from postman
   let result =await client.db("benr_2423").collection("new").findOne(
     {
-      name: req.params.name,
+      name: req.params.namee,
       //email: req.params.email,
       //password: req.params.password,
-
+      _id: new ObjectId(req.params.id),
     }
   )
   res.json(result);
@@ -82,11 +87,14 @@ app.get('/user/:name', async(req, res) => {
 //app.get('/user', (req, res) => {})
 //cannot use 2 get method with same end point, it will crash
 
+
+
 //update user profile
-app.patch('/user/:name', async (req, res) => {
+//如果别人知道id，就可以update别人的资料（这是一个问题）
+app.patch('/user/:id', async (req, res) => {
   let result = await client.db("benr_2423").collection("new").updateOne(
     {
-      name: req.params.name,
+      _id: new ObjectId(req.params.id),
     },
     {
       $set: {
@@ -98,10 +106,10 @@ app.patch('/user/:name', async (req, res) => {
 })  
 
 //delete user profile
-app.delete('/user/:name', async (req, res) => {
+app.delete('/user/:id', async (req, res) => {
   let result = await client.db("benr_2423").collection("new").deleteOne(
     {
-      name: req.params.name,
+      _id: new ObjectId(req.params.id),
     });
   console.log(result);
   res.json(result);
