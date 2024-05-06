@@ -121,7 +121,8 @@ app.delete('/user/:id', async (req, res) => {
   res.json(result);
 })
 
-app.post('/buy', async(req, res) => {
+/*
+app.post('/buy', (req, res) => {
   //console.log(req.headers)
   //console.log(req.headers.authorization.split(' ')[1])
   
@@ -129,9 +130,26 @@ app.post('/buy', async(req, res) => {
 
   var decoded = jwt.verify(token, 'mysupersecretpasskey');
   console.log(decoded) //bar
-
-
 })
+*/
+
+app.post('/buy', async(req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(403).json({ error: 'No authorization header sent' });
+  }
+
+  const token = req.headers.authorization.split(' ')[1];
+
+  try {
+    var decoded = jwt.verify(token, 'mysupersecretpasskey');
+    console.log(decoded); //bar
+    // Example of an asynchronous function call
+  
+    // Continue processing...
+  } catch (err) {
+    return res.status(403).json({ error: 'Invalid token' });
+  }
+});
 
 //define get method
 //end point is '/user'
