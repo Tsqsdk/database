@@ -1,6 +1,7 @@
 const express = require('express') 
 const app = express() 
 const port = process.env.PORT || 3000; 
+const jwt = require('jsonwebtoken');
 
 //to solve bcrypt is not defined
 const bcrypt = require('bcrypt');
@@ -41,7 +42,7 @@ app.post('/login', async(req, res) => {
     let result = await client.db("benr_2423").collection("new").findOne(
       {
         //1. check the existing of username by using findOne
-        name: req.body.name,
+        name: req.body.name
         //email: req.body.email,
       });
       console.log(result);
@@ -49,8 +50,13 @@ app.post('/login', async(req, res) => {
       res.send('Username not found')
     }else{
       //2. check password--bcrypt.compare
-      if(bcrypt.compareSync(req.body.password, result.password)){
-        res.send('Login success')
+      if(bcrypt.compareSync(req.body.password, result.password)==true){
+        var token = jwt.sign({ 
+          _id: result._id,
+          name: result.name 
+        }, 'mysupersecretpasskey',{expiresIn: 10*60});
+        res.send(token)
+        //res.send('Login success')
       }else{
         res.send('Login failed')
       }
@@ -115,7 +121,17 @@ app.delete('/user/:id', async (req, res) => {
   res.json(result);
 })
 
+app.post('/buy', async(req, res) => {
+  //console.log(req.headers)
+  //console.log(req.headers.authorization.split(' ')[1])
+  
+  const token = req.headers.authorization.split(' ')[1]
 
+  var decoded = jwt.verify(token, 'mysupersecretpasskey');
+  console.log(decoded) //bar
+
+
+})
 
 //define get method
 //end point is '/user'
