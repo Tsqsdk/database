@@ -70,18 +70,24 @@ app.get('/user/:name/:gmail', async(req, res) => {
 })
 */
 
+/*
 //get user profile
 //:username is a parameter that can be anything that user key in
 //可以有多个parameter
 //app.get('/user/:username/:email/:password', async(req, res) => {
-app.get('/user/:namee/:id', async(req, res) => {
+app.get('/user/:id', async(req, res) => {
+  const token = req.headers.authorization.split(' ')[1]
+  let decoded = jwt.verify(token, 'mysupersecretpasskey');
   //findOne
   //console.log('get user profile')
   //console.log(req.params)//to get the data of body from postman
   //console.log(req.params.username.email)//to get the data of body from postman
+  if (decoded){ //if user is login
+    if (decoded._id == req.params.id){ //if the user is accessing his own profile
   let result =await client.db("benr_2423").collection("new").findOne(
     {
-      name: req.params.namee,
+  
+      //name: req.params.namee,
       //email: req.params.email,
       //password: req.params.password,
       _id: new ObjectId(req.params.id),
@@ -89,10 +95,35 @@ app.get('/user/:namee/:id', async(req, res) => {
   )
   res.json(result);
   console.log(result);
-})
+}else{
+  res.status(401).send('Unauthorized')
+}
+}})
 //app.get('/user', (req, res) => {})
 //cannot use 2 get method with same end point, it will crash
+*/
+app.get('/user/:id', async(req, res) => {
+  if (!req.headers.authorization) {
+    return res.status(403).json({ error: 'No authorization header sent' });
+  }
 
+  const token = req.headers.authorization.split(' ')[1];
+
+  try {
+    let decoded = jwt.verify(token, 'mysupersecretpasskey');
+    if (decoded) { //if user is login
+        if (decoded._id == req.params.id) { //if the user is accessing his own profile
+            let result = await client.db("benr_2423").collection("new").findOne({
+                _id: new ObjectId(req.params.id),
+            })
+            res.json(result);
+            console.log(result);
+        }
+    }
+} catch (err) {
+    return res.status(403).json({ error: 'Invalid token' });
+}
+});
 
 
 //update user profile
